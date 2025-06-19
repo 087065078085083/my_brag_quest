@@ -4,5 +4,7 @@ Rails.application.routes.draw do
       patch :toggle_complete
     end
   end
+  
   root "quests#index"
+  get "brag/index"
 end

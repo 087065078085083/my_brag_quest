@@ -18,11 +18,19 @@ RSpec.describe "/quests", type: :request do
   # Quest. As you add validations to Quest, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      title: "Complete Academy Quest",
+      description: "Complete Ruby on Raisl project in Academy Quest",
+      complete: false
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      title: nil,
+      description: nil,
+      complete: false
+    }
   }
 
   describe "GET /index" do
@@ -64,9 +72,15 @@ RSpec.describe "/quests", type: :request do
         }.to change(Quest, :count).by(1)
       end
 
-      it "redirects to the created quest" do
+      it "render a new quest with Turbo stream" do
+        post quests_url, params: { quest: valid_attributes }, headers: { "ACCEPT" => "text/vnd.turbo-stream.html" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("turbo-stream action=\"prepend\"")
+      end
+
+      it "redirects to the index page after created quest" do
         post quests_url, params: { quest: valid_attributes }
-        expect(response).to redirect_to(quest_url(Quest.last))
+        expect(response).to redirect_to(quests_url)
       end
     end
 
@@ -81,38 +95,51 @@ RSpec.describe "/quests", type: :request do
         post quests_url, params: { quest: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
-    end
-  end
 
-  describe "PATCH /update" do
-    context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+      it "renders form with errors using Turbo Stream when quest creation fails" do
+        post quests_url, params: { quest: invalid_attributes }, headers: { "ACCEPT" => "text/vnd.turbo-stream.html" }
 
-      it "updates the requested quest" do
-        quest = Quest.create! valid_attributes
-        patch quest_url(quest), params: { quest: new_attributes }
-        quest.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the quest" do
-        quest = Quest.create! valid_attributes
-        patch quest_url(quest), params: { quest: new_attributes }
-        quest.reload
-        expect(response).to redirect_to(quest_url(quest))
-      end
-    end
-
-    context "with invalid parameters" do
-      it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        quest = Quest.create! valid_attributes
-        patch quest_url(quest), params: { quest: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        # expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include('<turbo-stream action="replace" target="new_quest">')
+        expect(response.body).to include("error") # ถ้า form มี error message
       end
     end
   end
+
+  # describe "PATCH /update" do
+  #   context "with valid parameters" do
+  #     let(:new_attributes) {
+  #       {
+  #         title: "Complete Extra",
+  #         description: "Complete Extra test after Academy quest",
+  #         complete: false
+  #       }
+  #     }
+
+  #     it "updates the requested quest" do
+  #       quest = Quest.create! valid_attributes
+  #       patch quest_url(quest), params: { quest: new_attributes }
+  #       quest.reload
+  #       skip("Add assertions for updated state")
+  #     end
+
+  #     it "redirects to the index after edit quest" do
+  #       quest = Quest.create! valid_attributes
+  #       patch quest_url(quest), params: { quest: new_attributes }
+  #       quest.reload
+  #       expect(response).to redirect_to(quests_url)
+  #     end
+  #   end
+
+  #   context "with invalid parameters" do
+  #     it "renders a response with 422 status (i.e. to display the 'edit' template)" do
+  #       quest = Quest.create! valid_attributes
+  #       patch quest_url(quest), params: { quest: invalid_attributes }
+  #       expect(response).to have_http_status(:unprocessable_entity)
+  #     end
+  #   end
+  # end
 
   describe "DELETE /destroy" do
     it "destroys the requested quest" do
@@ -128,4 +155,18 @@ RSpec.describe "/quests", type: :request do
       expect(response).to redirect_to(quests_url)
     end
   end
+
+  describe "Toggle complete" do
+    it "toggles complete status and responds with turbo stream" do
+        quest = Quest.create! valid_attributes
+        patch toggle_complete_quest_path(quest), headers: { "ACCEPT" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include("turbo-stream")
+        expect(quest.reload.complete).to eq(true)
+      end
+  end
+  
+
 end

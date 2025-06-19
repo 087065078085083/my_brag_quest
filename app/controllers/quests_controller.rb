@@ -26,7 +26,6 @@ class QuestsController < ApplicationController
     respond_to do |format|
       if @quest.save
         format.turbo_stream do
-          # สมมติว่าเราต้องการ clear ฟอร์มหลังบันทึกสำเร็จ
           render turbo_stream: [
             turbo_stream.prepend('quests', partial: 'quests/quest', locals: { quest: @quest }),
             turbo_stream.replace('new_quest', partial: 'quests/form', locals: { quest: Quest.new })
@@ -37,22 +36,23 @@ class QuestsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace('new_quest', partial: 'quests/form', locals: { quest: @quest })
         end
-        format.html { render :new }
+        format.html { render :new, status: :unprocessable_entity }
+        
       end
     end
   end
 
   # PATCH/PUT /quests/1 or /quests/1.json
   def update
-    respond_to do |format|
-      if @quest.update(quest_params)
-        format.html { redirect_to @quest, notice: "Quest was successfully updated." }
-        format.json { render :show, status: :ok, location: @quest }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @quest.errors, status: :unprocessable_entity }
-      end
-    end
+    # respond_to do |format|
+    #   if @quest.update(quest_params)
+    #     format.html { redirect_to @quest, notice: "Quest was successfully updated." }
+    #     format.json { render :show, status: :ok, location: @quest }
+    #   else
+    #     format.html { render :edit, status: :unprocessable_entity }
+    #     format.json { render json: @quest.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # DELETE /quests/1 or /quests/1.json
@@ -68,9 +68,11 @@ class QuestsController < ApplicationController
   def toggle_complete
     @quest = Quest.find(params[:id])
     @quest.update(complete: !@quest.complete)
-  
+
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("quest_#{@quest.id}", partial: "quest", locals: { quest: @quest })
+      end
       format.html { redirect_to quests_path }
     end
   end
