@@ -25,6 +25,12 @@
           Your Quests
         </h2>
       </div>
+      
+      <ul id="quests" class="divide-y divide-gray-100">
+        <% @quests.each do |quest| %>
+          <%= render 'quest', quest: quest %>
+        <% end %>
+      </ul>
     </div>
   </div>
 </div>
