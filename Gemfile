@@ -71,5 +71,3 @@ group :test do
 end
 
 gem "tailwindcss-rails"
-gem 'pg', '~> 1.1' # สำหรับ PostgreSQL
-gem 'puma', '~> 5.0' # Web server
