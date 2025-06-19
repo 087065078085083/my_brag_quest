@@ -1,4 +1,4 @@
-div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
   <div class="max-w-4xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -25,19 +25,6 @@ div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
           Your Quests
         </h2>
       </div>
-      
-      <ul id="quests" class="divide-y divide-gray-100">
-        <% if @quests.any? %>
-          <% @quests.each do |quest| %>
-            <%= render 'quest', quest: quest %>
-          <% end %>
-        <% else %>
-          <li class="p-8 text-center text-gray-500">
-            <div class="text-6xl mb-4">🎯</div>
-            <p class="text-lg">No quests yet! Create your first quest above.</p>
-          </li>
-        <% end %>
-      </ul>
     </div>
   </div>
 </div>
