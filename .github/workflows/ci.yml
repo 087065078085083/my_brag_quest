@@ -90,7 +90,7 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:password@localhost:5432/my_brag_test
           # REDIS_URL: redis://localhost:6379/0
-        # run: bin/rails db:test:prepare test test:system
+        run: bin/rails db:test:prepare test test:system
         run: bundle exec rspec spec
 
       - name: Keep screenshots from failed system tests
