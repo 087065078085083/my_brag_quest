@@ -23,8 +23,8 @@ test:
 production:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
-  database: todo_app_production
-  username: todo_app
+  database: my_brag_production
+  username: postgres
   password: <%= ENV["TODO_APP_DATABASE_PASSWORD"] %>
 
 cable:
