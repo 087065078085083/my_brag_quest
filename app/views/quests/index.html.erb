@@ -1,16 +1,16 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Quests" %>
-
-<h1>Quests</h1>
-
-<div id="quests">
-  <% @quests.each do |quest| %>
-    <%= render quest %>
-    <p>
-      <%= link_to "Show this quest", quest %>
-    </p>
-  <% end %>
+<div>
+  <h1>Quests</h1>
 </div>
 
-<%= link_to "New quest", new_quest_path %>
+<!-- ส่วนของ new form ใน Turbo Frame -->
+<%= turbo_frame_tag "new_quest" do %>
+  <%= render 'form', quest: Quest.new %>
+<% end %>
+
+<hr>
+
+<ul id="quests">
+  <% @quests.each do |quest| %>
+    <%= render 'quest', quest: quest %>
+  <% end %>
+</ul>
