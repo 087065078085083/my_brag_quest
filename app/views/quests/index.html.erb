@@ -1,16 +1,43 @@
-<div>
-  <h1>Quest</h1>
+div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">My Brag Quest</h1>
+      <p class="text-gray-600 text-lg">Wanus Kurirung (สุดหล่อ)</p>
+    </div>
+
+    <!-- New Quest Form Card -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+        <span class="mr-2">✨</span>
+        Add New Quest
+      </h2>
+      <%= turbo_frame_tag "new_quest" do %>
+        <%= render 'form', quest: Quest.new %>
+      <% end %>
+    </div>
+
+    <!-- Quests List -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+          <span class="mr-2">📋</span>
+          Your Quests
+        </h2>
+      </div>
+      
+      <ul id="quests" class="divide-y divide-gray-100">
+        <% if @quests.any? %>
+          <% @quests.each do |quest| %>
+            <%= render 'quest', quest: quest %>
+          <% end %>
+        <% else %>
+          <li class="p-8 text-center text-gray-500">
+            <div class="text-6xl mb-4">🎯</div>
+            <p class="text-lg">No quests yet! Create your first quest above.</p>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
 </div>
-
-<!-- ส่วนของ new form ใน Turbo Frame -->
-<%= turbo_frame_tag "new_quest" do %>
-  <%= render 'form', quest: Quest.new %>
-<% end %>
-
-<hr>
-
-<ul id="quests">
-  <% @quests.each do |quest| %>
-    <%= render 'quest', quest: quest %>
-  <% end %>
-</ul>
